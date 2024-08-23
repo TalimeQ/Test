@@ -9,6 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Abilities/PTAbilitySystemComponent.h"
+
 
 UTP_WeaponComponent::UTP_WeaponComponent()
 {
@@ -22,37 +24,14 @@ void UTP_WeaponComponent::Fire()
 	{
 		return;
 	}
-	
-	if (ProjectileClass != nullptr)
-	{
-		UWorld* const World = GetWorld();
-		if (World != nullptr)
-		{
-			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
-			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 
-			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
-			
-			FActorSpawnParameters ActorSpawnParams;
-			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-			
-			World->SpawnActor<ATestParadarkProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-		}
-	}
+	FGameplayTagContainer TagContainer;
+	TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.ID.Shooting.Regular"));
 	
-	if (FireSound != nullptr)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
-	}
+	auto* AbilitiesComp = Character->FindComponentByClass<UPTAbilitySystemComponent>();
+	AbilitiesComp->TryActivateAbilitiesByTag(TagContainer);
 	
-	if (FireAnimation != nullptr)
-	{
-		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
-		if (AnimInstance != nullptr)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
+	return;
 }
 
 void UTP_WeaponComponent::AttachWeapon(ATestParadarkCharacter* TargetCharacter)

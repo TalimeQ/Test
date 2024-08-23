@@ -18,14 +18,12 @@ class TESTPARADARK_API ATestParadarkPlayerController : public APlayerController
 	
 protected:
 
-	/** Input Mapping Context to be used for player input */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputMappingContext* InputMappingContext;
 
-	// Begin Actor interface
+	
 protected:
-
+	// Begin Actor interface
 	virtual void BeginPlay() override;
-
 	// End Actor interface
 };

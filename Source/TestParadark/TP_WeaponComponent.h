@@ -7,6 +7,7 @@
 #include "TP_WeaponComponent.generated.h"
 
 class ATestParadarkCharacter;
+class UAbilitySystemComponent;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TESTPARADARK_API UTP_WeaponComponent : public USkeletalMeshComponent
@@ -14,18 +15,7 @@ class TESTPARADARK_API UTP_WeaponComponent : public USkeletalMeshComponent
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class ATestParadarkProjectile> ProjectileClass;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	USoundBase* FireSound;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	UAnimMontage* FireAnimation;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector MuzzleOffset;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputMappingContext* FireMappingContext;
 	
@@ -43,12 +33,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+// TODO :: Move to ability :)
+	
+	UPROPERTY(EditDefaultsOnly, Category=Projectile)
+	TSubclassOf<class ATestParadarkProjectile> ProjectileClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
+	USoundBase* FireSound;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UAnimMontage* FireAnimation;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
+	FVector MuzzleOffset;
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
-	/** The Character holding this weapon*/
-	ATestParadarkCharacter* Character;
+	UPROPERTY()
+	TWeakObjectPtr<ATestParadarkCharacter> Character;
 };
