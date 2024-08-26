@@ -30,15 +30,24 @@ void UPTGameplayAbilityShoot::ActivateAbility(const FGameplayAbilitySpecHandle H
 	
 	FActorSpawnParameters ActorSpawnParams;
 	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-    			
+
+	// There might be shitton of projectiles here, normally i would use object pool on them/or any other actor that is spawned -> destroyed to mouch
+	// Not doing it here as i dont care that much about performance in test task :)
 	GetWorld()->SpawnActor<ATestParadarkProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 
 	FTimerDelegate Delegate;
 	Delegate.BindUObject(this,&UPTGameplayAbilityShoot::EndAbility,Handle,ActorInfo,ActivationInfo,false,false);
+
+	// TODO :: Might be a gameplay task for this, check later :)
 	
+	// Dont want it to be spammable, cooldown would probably do it also but i want to also block execution of other abilities while delaying tag removal
+	// This ability applies tag that would block other potential abilities for time being
+	// One of such abilities could be reload or weapon swap which should be blocked for the duration of ability
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle,Delegate,ShootDelay,false);
+
+
 	
-	// This should me moved do cue
+	// TODO :: This should me moved do cue
 	
 	// if (FireSound != nullptr)
 	// {

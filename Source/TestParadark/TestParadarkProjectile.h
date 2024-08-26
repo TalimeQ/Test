@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "TestParadarkProjectile.generated.h"
 
+class UGameplayEffect;
 class USphereComponent;
 class UProjectileMovementComponent;
 
@@ -14,24 +15,26 @@ class ATestParadarkProjectile : public AActor
 {
 	GENERATED_BODY()
 
-	/** Sphere collision component */
-	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
-	USphereComponent* CollisionComp;
-
-	/** Projectile movement component */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
-	UProjectileMovementComponent* ProjectileMovement;
-
 public:
 	ATestParadarkProjectile();
-
-	/** called when projectile hits something */
+	
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-	/** Returns CollisionComp subobject **/
+	
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
-	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+
+private:
+	void ApplyOnHitEffects(AActor* Actor);
+
+protected:
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	USphereComponent* CollisionComp;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UProjectileMovementComponent* ProjectileMovement;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Abilities")
+	TArray<TSubclassOf<UGameplayEffect>> OnHitEffects;
 };
 
