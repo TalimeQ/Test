@@ -17,15 +17,7 @@ UPTWorldWidget::UPTWorldWidget(const FObjectInitializer& ObjectInitializer) : Su
 void UPTWorldWidget::SetAttachmentActor(AActor* InAttachment)
 {
 	AttachmentActor = InAttachment;
-
-	SetupBinds();
 }
-
-void UPTWorldWidget::SetupBinds()
-{
-
-}
-
 
 void UPTWorldWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {

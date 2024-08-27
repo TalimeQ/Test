@@ -21,7 +21,6 @@ public:
 	//end UUserWidget override
 
 private:
-	void SetupBinds();
 	
 protected:
 	/*

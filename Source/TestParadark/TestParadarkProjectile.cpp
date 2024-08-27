@@ -42,16 +42,29 @@ void ATestParadarkProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherA
 void ATestParadarkProjectile::ApplyOnHitEffects(AActor* Actor)
 {
 	UAbilitySystemComponent* TargetAbilitySystem = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor);
-	if(TargetAbilitySystem != nullptr)
+	if(TargetAbilitySystem == nullptr)
 	{
 		UE_LOG(LogTemp,Warning, TEXT("No ability system found for %s"),*GetNameSafe(Actor));
 		return;
 	}
 
-	UE_LOG(LogTemp,Log,TEXT("Applying Gameplay Effects"));
+
 	
 	for(auto EffectClass : OnHitEffects)
 	{
-	//	TargetAbilitySystem->ApplyGameplayEffectToSelf()
+		const int32 Level = 0;
+		
+		FGameplayEffectContextHandle Context = FGameplayEffectContextHandle(UAbilitySystemGlobals::Get().AllocGameplayEffectContext());
+		Context.AddInstigator(GetInstigator(),GetInstigator());
+		
+		TWeakObjectPtr<UGameplayEffect> Effect =  EffectClass->GetDefaultObject<UGameplayEffect>();;
+		TargetAbilitySystem->ApplyGameplayEffectToSelf(Effect.Get(),Level,Context);
+
+		UE_LOG(LogTemp,Log,TEXT("Applied Gameplay Effect: %s"),*GetNameSafe(Effect));
+	}
+
+	for(auto Effect : TargetAbilitySystem->GetActiveEffects(FGameplayEffectQuery()))
+	{
+		UE_LOG(LogTemp,Log,TEXT("Applied Gameplay Effect: %s"),*GetNameSafe(Effect));
 	}
 }

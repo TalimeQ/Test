@@ -29,6 +29,7 @@ void UPTGameplayAbilityShoot::ActivateAbility(const FGameplayAbilitySpecHandle H
 	const FVector SpawnLocation = IPTShootingInterface::Execute_GetBulletSpawnLocation(ActorInfo->AvatarActor.Get(),SpawnRotation);
 	
 	FActorSpawnParameters ActorSpawnParams;
+	ActorSpawnParams.Instigator = Cast<APawn>(GetOwningActorFromActorInfo());
 	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
 	// There might be shitton of projectiles here, normally i would use object pool on them/or any other actor that is spawned -> destroyed to mouch

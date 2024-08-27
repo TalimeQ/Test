@@ -26,7 +26,7 @@ public:
 	// Exposing health max both for edition and ease of acces in other BPS
 	// Later we could add debuffs to HealthMax similarly to for example Grimoires from WH:Vermintide
 	// Not adding Min value as for health it would be always 0.0f
-	UPROPERTY(BlueprintReadOnly, Category = "Health")
+	UPROPERTY(BlueprintReadOnly, Category = "HealthMax")
 	FGameplayAttributeData HealthMax = 100.0f;
 	ATTRIBUTE_ACCESSORS(UPTAttributeSet,HealthMax);
 };

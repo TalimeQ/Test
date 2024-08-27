@@ -34,8 +34,10 @@ protected:
 	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
 	
 private:
-
-	void AdjustHealthData(const FOnAttributeChangeData& Data);
+	//We can always add overrides and move them to protected, there is no need to do that now
+	void CheckDeath(const FOnAttributeChangeData& Data);
+	
+	void DisplayOnUI(const FOnAttributeChangeData& Data) const;
 	
 	void TrySpawnHealthWidget();
 	
@@ -44,17 +46,21 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> TargetMesh;
 
-	UPROPERTY(VisibleAnywhere, Category = "Abilities")
+	// Exposed for BP as read only, its easy to create and prototype effect that way
+	// As i can quickly apply them in BP
+	// This is ok as normally this object would only serve as a lab test dummy :)
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Abilities")
 	TObjectPtr<UPTAbilitySystemComponent> AbilitySystemComponent;
 
 	// Basically assign any widget we fancy
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UPTWorldWidget> HealthWidgetClass;
-	
+
+
 private:
 	UPROPERTY()
-	UPTWorldWidget* HealthWidget;
+	TObjectPtr<UPTWorldWidget> HealthWidget;
 	
 	UPROPERTY()
-	TWeakObjectPtr<UPTAttributeSet> AttributeSet;
+	const UPTAttributeSet* AttributeSet ;
 };
