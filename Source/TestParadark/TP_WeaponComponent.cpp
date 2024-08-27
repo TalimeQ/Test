@@ -14,7 +14,7 @@
 
 UTP_WeaponComponent::UTP_WeaponComponent()
 {
-	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
+	FiringModeIndex = 0;
 }
 
 
@@ -25,13 +25,30 @@ void UTP_WeaponComponent::Fire()
 		return;
 	}
 
+	if(!ensureAlwaysMsgf(AvailableFiringModes.Num(),TEXT("UTP_WeaponComponent has no firing modes, please fix it! Aborting shooting")))
+	{
+		return;
+	}
+
 	FGameplayTagContainer TagContainer;
-	TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.ID.Shooting.Regular"));
+	FGameplayTag CurrentAbility = AvailableFiringModes[FiringModeIndex];
+	TagContainer.AddTag(CurrentAbility);
+
+	UE_LOG(LogTemp,Log,TEXT("Firing with the ability type of : %s"),*(CurrentAbility.ToString()));
 	
 	auto* AbilitiesComp = Character->FindComponentByClass<UPTAbilitySystemComponent>();
 	AbilitiesComp->TryActivateAbilitiesByTag(TagContainer);
-	
-	return;
+}
+
+void UTP_WeaponComponent::ChangeAmmo()
+{
+	UE_LOG(LogTemp,Log,TEXT("Swapping Weapon!"));
+
+	FiringModeIndex++;
+	if(FiringModeIndex >= AvailableFiringModes.Num())
+	{
+		FiringModeIndex = 0;
+	}
 }
 
 void UTP_WeaponComponent::AttachWeapon(ATestParadarkCharacter* TargetCharacter)
@@ -58,6 +75,7 @@ void UTP_WeaponComponent::AttachWeapon(ATestParadarkCharacter* TargetCharacter)
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
+			EnhancedInputComponent->BindAction(ChangeAmmoTypeAction,ETriggerEvent::Triggered, this, &UTP_WeaponComponent::ChangeAmmo);
 		}
 	}
 }

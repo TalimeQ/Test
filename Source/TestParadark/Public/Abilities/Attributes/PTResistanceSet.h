@@ -16,8 +16,7 @@ GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 /*
  * Potentially i would also add Min/Max customizable values
  * This could get us a system similar to the ARPGS like diablo where we could have resistance caps
- * Vulnerability caps ETC
- * Separate Attribute set as this 
+ * Vulnerability caps etc.
  */
 UCLASS()
 class TESTPARADARK_API UPTResistanceSet : public UPTAttributeSet
