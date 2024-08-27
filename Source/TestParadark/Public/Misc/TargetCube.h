@@ -36,9 +36,10 @@ protected:
 private:
 	//We can always add overrides and move them to protected, there is no need to do that now
 	void CheckDeath(const FOnAttributeChangeData& Data);
-	
+
+	// Display data change on UI
 	void DisplayOnUI(const FOnAttributeChangeData& Data) const;
-	
+	// Spawn Health widget after being hit
 	void TrySpawnHealthWidget();
 	
 protected:
