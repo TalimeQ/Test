@@ -47,8 +47,6 @@ void ATestParadarkProjectile::ApplyOnHitEffects(AActor* Actor)
 		UE_LOG(LogTemp,Warning, TEXT("No ability system found for %s"),*GetNameSafe(Actor));
 		return;
 	}
-
-
 	
 	for(auto EffectClass : OnHitEffects)
 	{
@@ -60,11 +58,11 @@ void ATestParadarkProjectile::ApplyOnHitEffects(AActor* Actor)
 		TWeakObjectPtr<UGameplayEffect> Effect =  EffectClass->GetDefaultObject<UGameplayEffect>();;
 		TargetAbilitySystem->ApplyGameplayEffectToSelf(Effect.Get(),Level,Context);
 
-		UE_LOG(LogTemp,Log,TEXT("Applied Gameplay Effect: %s"),*GetNameSafe(Effect));
+		UE_LOG(LogTemp,Log,TEXT("Applied Gameplay Effect: %s"),*GetNameSafe(Effect.Get()));
 	}
 
 	for(auto Effect : TargetAbilitySystem->GetActiveEffects(FGameplayEffectQuery()))
 	{
-		UE_LOG(LogTemp,Log,TEXT("Applied Gameplay Effect: %s"),*GetNameSafe(Effect));
+		UE_LOG(LogTemp,Log,TEXT("Target %s has gameplay Effect: %s"),*GetNameSafe(this),*(Effect.ToString()));
 	}
 }
