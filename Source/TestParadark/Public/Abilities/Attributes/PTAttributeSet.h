@@ -29,4 +29,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "HealthMax")
 	FGameplayAttributeData HealthMax = 100.0f;
 	ATTRIBUTE_ACCESSORS(UPTAttributeSet,HealthMax);
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Resistances")
+	FGameplayAttributeData Resistances = 0.0f;
+	ATTRIBUTE_ACCESSORS(UPTAttributeSet,Resistances);
+
+	// Just set the damage base for all attacks to be constant as i try figure effects in GAS
+	UPROPERTY(BlueprintReadOnly, Category = "DamageBase")
+	FGameplayAttributeData DamageBase = 10.0f;
+	ATTRIBUTE_ACCESSORS(UPTAttributeSet,DamageBase);
 };
