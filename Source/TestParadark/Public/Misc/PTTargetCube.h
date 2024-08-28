@@ -6,14 +6,14 @@
 #include "AbilitySystemInterface.h"
 #include "GameplayEffectTypes.h"
 #include "GameFramework/Actor.h"
-#include "TargetCube.generated.h"
+#include "PTTargetCube.generated.h"
 
 class UPTAbilitySystemComponent;
 class UPTAttributeSet;
 class UPTWorldWidget;
 
 UCLASS()
-class TESTPARADARK_API ATargetCube : public AActor , public IAbilitySystemInterface
+class TESTPARADARK_API APTTargetCube : public AActor , public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 	
@@ -23,7 +23,7 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	// End implementation of IAbilitySystemInterface
 	
-	ATargetCube();
+	APTTargetCube();
 	
 	//Start AActor override
 	virtual void PostInitializeComponents() override;
@@ -34,26 +34,23 @@ protected:
 	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
 	
 private:
-	//We can always add overrides and move them to protected, there is no need to do that now
-	void CheckDeath(const FOnAttributeChangeData& Data);
 
-	// Display data change on UI
+	void CheckDeath(const FOnAttributeChangeData& Data);
+	
 	void DisplayOnUI(const FOnAttributeChangeData& Data) const;
-	// Spawn Health widget after being hit
+	
 	void TrySpawnHealthWidget();
 	
 protected:
-	// This will also serve for collisions
+	// Mesh and collider, this will trigger OnHits
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> TargetMesh;
 
-	// Exposed for BP as read only, its easy to create and prototype effect that way
-	// As i can quickly apply them in BP
-	// This is ok as normally this object would only serve as a lab test dummy :)
+	// Ability system reference for ease of access 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Abilities")
 	TObjectPtr<UPTAbilitySystemComponent> AbilitySystemComponent;
 
-	// Basically assign any widget we fancy
+	// Widget class for health UI displayable after hit
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UPTWorldWidget> HealthWidgetClass;
 

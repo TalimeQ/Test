@@ -1,12 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Abilities/Calculations/PT_ExecutionResistances.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/Attributes/PTAttributeSet.h"
 
-// I wont lie im basically writing it step by step merging multiple tutorials and trying to make it readable/undestand it
-// FML, learning GAS for this task was not really worth it
+// README
+// Resistances implementation
+// Based on https://www.thegames.dev/?p=165
+// Potentially could be done with different attributes as different resistances.
+// This however seems to be the cleanest way of doing it to me
+
 struct FDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Health);

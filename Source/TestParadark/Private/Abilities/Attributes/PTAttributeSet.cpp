@@ -21,9 +21,8 @@ void UPTAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, fl
 		}
 	}
 
-	// We would have to clamp health again to health max if it changes somehow
-	// For example we get a health max debuff, out of scope of this task but leaving comment so you know :)
-	// Especially as i dont have any effects that do so
+	// Also do it for other params, maybe extract a function call as this will be similar to health change
+	
 	// if(Attribute == GetHealthMaxAttribute())
 	// {
 	// 	

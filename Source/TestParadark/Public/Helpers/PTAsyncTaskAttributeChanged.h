@@ -15,6 +15,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAttributeChanged, FGameplayAtt
  * There is always an option of querying ability componment for attributes in TICK but for obvious reasons we wont go with that :)
  */
 
+// Was supposed to be tackled with UI, but i changed the way i react to attributes
+
 UCLASS(BlueprintType, meta=(ExposedAsyncProxy = AsyncTask))
 class TESTPARADARK_API UPTAsyncTaskAttributeChanged : public UBlueprintAsyncActionBase
 {

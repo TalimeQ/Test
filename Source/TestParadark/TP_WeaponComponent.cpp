@@ -45,7 +45,6 @@ void UTP_WeaponComponent::ChangeAmmo(const FInputActionInstance& Instance)
 	UE_LOG(LogTemp,Log,TEXT("Swapping Weapon!"));
 
 	int32 Direction = FMath::Sign(Instance.GetValue().Get<float>());
-	
 	FiringModeIndex += 1 * Direction;
 	if(FiringModeIndex >= AvailableFiringModes.Num())
 	{

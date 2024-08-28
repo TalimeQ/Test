@@ -1,2 +1,21 @@
 Heyo krótkie informacje do tego co bedziecie czytali:
 
+Nie jestem pewien czy da sie tak ladnie pisac systemy pod duzy projekt tym bardziej brac takie cos podczas zadania testowego.
+Jezeli znasz to co robisz (a sa jeszcze pivotki) to i tak cos cie zaskoczy. Z góry wydaje mi sie ze za mocny coupling mam miedzy bronia 
+a abilitkami i effektami. Tam gdzie nie ma mocnych powiazan to zalatwial to za mnie GAS, zreszta jak wiekszosc architektury.
+
+GAS'a zupelnie nie znam, wiec jak ujebiecie testówke to przynajmniej dzieki za motywacje do nauki <3
+
+Notatki do kodu
+-> ShootingAbility prawdopodobnie mialby podklasy na shoot projectile shoot raytrace. Sama abilita
+ogarnialaby podstawowe rzeczy takie jak zabieranie ammo, granie animki z aktualnej bronki etc
+-> Nie wrzucalbym raczej shootingu do broni, wydawalo sie to naturalne jako polaczenie bron (obiekt) +
+jej ammo + funkcja strzelajaca ale raczejbym skupil sie zeby wszystko bylo w jednym miejscu (characterze)
+-> Tak samo nie jestem teraz pewien polaczenia Pocisk + GAS Effect, raczej powinienem tam wpakowac jakis delegat 
+i zrobic jego trigger na obiekcie po trafieniu 
+(czysciej ladniej lepiej, bo mozna wtedy odrazu robic abilitke ktora zarzuca effekty a ktora definiuje sie w jednym miejscu
+bez latania w stylu BP_Ability -> BP_Pocisku -> BP_Charactera (bo assigment))
+
+
+Bierzcie to wszystko z duzym dystansem, ja mimo 4 lat doswiadczenia w najlepszym wypadku czuje sie jako Junior+ (i to tylko dlatego
+ze sie nie obsram jak dostane zadanie do zrobienia plus cos tam potrafie negocjowac i pracowac z designem)

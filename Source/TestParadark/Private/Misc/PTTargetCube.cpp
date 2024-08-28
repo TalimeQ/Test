@@ -1,11 +1,11 @@
 
-#include "Misc/TargetCube.h"
+#include "Misc/PTTargetCube.h"
 #include "Abilities/PTAbilitySystemComponent.h"
 #include "Abilities/Attributes/PTAttributeSet.h"
 #include "UI/PTWorldWidget.h"
 #include "UI/Interfaces/PTUiHealthInterface.h"
 
-ATargetCube::ATargetCube()
+APTTargetCube::APTTargetCube()
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UPTAbilitySystemComponent>("AbilitiesComp");
 
@@ -13,40 +13,38 @@ ATargetCube::ATargetCube()
 	RootComponent = TargetMesh;
 }
 
-UAbilitySystemComponent* ATargetCube::GetAbilitySystemComponent() const
+UAbilitySystemComponent* APTTargetCube::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
 }
 
-void ATargetCube::PostInitializeComponents()
+void APTTargetCube::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	// TODO :: FIX
-	// Generally i tried GAS documentation way of creating my attribute set and it auto assigning (and it worked!)
-	// However instead of replacing it it basically left me with 2 instances of it which sucks
-	// Normally i would use static class but it somehow does not work and i have neither time nor sanity to work with it for now
+	// Grab attribute set for future use
 	TSubclassOf<UAttributeSet> AttributeSetClass = UPTAttributeSet::StaticClass();
 	AttributeSet = Cast<UPTAttributeSet>(AbilitySystemComponent->GetAttributeSet(AttributeSetClass));
 	
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).
-	AddUObject(this,&ATargetCube::OnHealthChanged);
+	AddUObject(this,&APTTargetCube::OnHealthChanged);
 }
 
-void ATargetCube::OnHealthChanged(const FOnAttributeChangeData& Data)
+void APTTargetCube::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
-	TrySpawnHealthWidget();
 	// Could be done in tick -> but ticks are hard to debug if the larger they get and also they underperform
 	// In case of cool bindings from UI this is also not worth the trouble
 	// 1. Lyra seems to create separate component just so they can display attributes to UI and use delegates with it (which is meh imo)
 	// 2. In GAS documentation he creates async task which binds to attribute change  (which is again another wrapper, and seems like overkill)
 	// So i went with simple function call as its the simplest and thus most elegant at this moment
+	
+	TrySpawnHealthWidget();
 
 	DisplayOnUI(Data);
 	CheckDeath(Data);
 }
 
-void ATargetCube::CheckDeath(const FOnAttributeChangeData& Data)
+void APTTargetCube::CheckDeath(const FOnAttributeChangeData& Data)
 {
 	if(FMath::IsNearlyZero(Data.NewValue))
 	{
@@ -54,7 +52,7 @@ void ATargetCube::CheckDeath(const FOnAttributeChangeData& Data)
 	}
 }
 
-void ATargetCube::DisplayOnUI(const FOnAttributeChangeData& Data) const
+void APTTargetCube::DisplayOnUI(const FOnAttributeChangeData& Data) const
 {
 	if(HealthWidget == nullptr)
 	{
@@ -76,7 +74,7 @@ void ATargetCube::DisplayOnUI(const FOnAttributeChangeData& Data) const
 	IPTUiHealthInterface::Execute_OnHealthChanged(HealthWidget,CurrentHealth,OldHealth,HealthMax);
 }
 
-void ATargetCube::TrySpawnHealthWidget()
+void APTTargetCube::TrySpawnHealthWidget()
 {
 	if(!ensureMsgf(HealthWidgetClass, TEXT("Health Widget Class is missing from %s"), *GetNameSafe(this)))
 	{

@@ -31,15 +31,15 @@ protected:
 	void OnTagAdded(FGameplayTag AddedTag, int TagCount);
 	
 protected:
-	// Exposing so i can assing a burning effect in BP, for quicker access
+	// For ease of acces, and quick testing
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystem;
 
+	// Hitbox of this component
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UBoxComponent> HitBox;
 
-	// Anywhere, there could be level specific fire that can be put out only in a X way
-	// For example instead of standard water bullet we would have to turn on extinguishers 
+	// Tag that we will act upon
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	FGameplayTag RequiredTag;
 };

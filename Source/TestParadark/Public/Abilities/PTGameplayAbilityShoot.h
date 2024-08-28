@@ -21,11 +21,13 @@ public:
 	// End UPTGameplayAbilityBase override
 
 protected:
-	// Exposed for design
-	// We can have multiple weird projectiles 
+	// Exposed so we can create multiple shoots that fire different projectiles (healing/etc)
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TSubclassOf<ATestParadarkProjectile> ProjectileClass;
 
+	// Delay between shoots
+	//~Normally that would be a Cooldown that starts after ability
+	//~However i would need to create an event that plays anim and then removes tag, then apply cooldown, too much hassle for now 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	float ShootDelay = 0.2f;
 
