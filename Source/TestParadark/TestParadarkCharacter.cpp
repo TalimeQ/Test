@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "TP_WeaponComponent.h"
 #include "Abilities/PTAbilitySystemComponent.h"
 #include "Abilities/PTGameplayAbilityBase.h"
 #include "Engine/LocalPlayer.h"
@@ -33,6 +34,7 @@ ATestParadarkCharacter::ATestParadarkCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
 	AbilityComp = CreateDefaultSubobject<UPTAbilitySystemComponent>("AbilityComp");
+	WeaponMeshComp = nullptr;
 }
 
 void ATestParadarkCharacter::BeginPlay()
@@ -53,11 +55,10 @@ void ATestParadarkCharacter::BeginPlay()
 
 const FVector ATestParadarkCharacter::GetBulletSpawnLocation_Implementation(const FRotator SpawnRotation)
 {
+	// Weapon mesh comp is a hack here, 
+	FVector MuzzleOffset =  WeaponMeshComp->GetSocketLocation("Muzzle") + GetActorForwardVector() * 40.0f;
 
-	FVector MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
-	const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
-	
-	return SpawnLocation;
+	return MuzzleOffset;
 }
 
 const FRotator ATestParadarkCharacter::GetBulletSpawnRotation_Implementation()
@@ -88,6 +89,11 @@ void ATestParadarkCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	}
 }
 
+
+void ATestParadarkCharacter::SetWeapon(USkeletalMeshComponent* Weapon)
+{
+	WeaponMeshComp = Weapon;
+}
 
 void ATestParadarkCharacter::Move(const FInputActionValue& Value)
 {

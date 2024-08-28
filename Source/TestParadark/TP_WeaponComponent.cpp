@@ -40,14 +40,26 @@ void UTP_WeaponComponent::Fire()
 	AbilitiesComp->TryActivateAbilitiesByTag(TagContainer);
 }
 
-void UTP_WeaponComponent::ChangeAmmo()
+void UTP_WeaponComponent::ChangeAmmo(const FInputActionInstance& Instance)
 {
 	UE_LOG(LogTemp,Log,TEXT("Swapping Weapon!"));
 
-	FiringModeIndex++;
+	int32 Direction = FMath::Sign(Instance.GetValue().Get<float>());
+	
+	FiringModeIndex += 1 * Direction;
 	if(FiringModeIndex >= AvailableFiringModes.Num())
 	{
 		FiringModeIndex = 0;
+	}
+	else if(FiringModeIndex < 0)
+	{
+		FiringModeIndex = AvailableFiringModes.Num() - 1;
+	}
+
+	if(!ensureAlwaysMsgf(AvailableFiringModes.Num(),TEXT("UTP_WeaponComponent has no firing modes, please fix it! Aborting shooting")))
+	{
+		UE_LOG(LogTemp,Log,TEXT("New Firing Mode : %s"),*(AvailableFiringModes[FiringModeIndex].ToString()));
+		
 	}
 }
 
@@ -64,6 +76,7 @@ void UTP_WeaponComponent::AttachWeapon(ATestParadarkCharacter* TargetCharacter)
 	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
 	
 	Character->SetHasRifle(true);
+	Character->SetWeapon(this);
 	
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
 	{

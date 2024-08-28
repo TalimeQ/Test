@@ -22,20 +22,24 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Health")
 	FGameplayAttributeData Health = 100.0f;
 	ATTRIBUTE_ACCESSORS(UPTAttributeSet,Health);
-
+	
 	// Exposing health max both for edition and ease of acces in other BPS
 	// Later we could add debuffs to HealthMax similarly to for example Grimoires from WH:Vermintide
 	// Not adding Min value as for health it would be always 0.0f
 	UPROPERTY(BlueprintReadOnly, Category = "HealthMax")
 	FGameplayAttributeData HealthMax = 100.0f;
 	ATTRIBUTE_ACCESSORS(UPTAttributeSet,HealthMax);
-	
+
+	// The gist of how i would do it is here
 	UPROPERTY(BlueprintReadOnly, Category = "Resistances")
 	FGameplayAttributeData Resistances = 0.0f;
 	ATTRIBUTE_ACCESSORS(UPTAttributeSet,Resistances);
 
-	// Just set the damage base for all attacks to be constant as i try figure effects in GAS
+	// Constant damage for ease and quick of use
+	// Could then be potentially adjusted with for example effects (weapon upgrades)
 	UPROPERTY(BlueprintReadOnly, Category = "DamageBase")
 	FGameplayAttributeData DamageBase = 10.0f;
 	ATTRIBUTE_ACCESSORS(UPTAttributeSet,DamageBase);
+
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 };

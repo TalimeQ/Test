@@ -2,7 +2,6 @@
 
 
 #include "Abilities/PTGameplayAbilityShoot.h"
-
 #include "Abilities/Interfaces/PTShootingInterface.h"
 #include "GameFramework/Character.h"
 #include "TestParadark/TestParadarkProjectile.h"
@@ -45,16 +44,15 @@ void UPTGameplayAbilityShoot::ActivateAbility(const FGameplayAbilitySpecHandle H
 	// This ability applies tag that would block other potential abilities for time being
 	// One of such abilities could be reload or weapon swap which should be blocked for the duration of ability
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle,Delegate,ShootDelay,false);
-
-
 	
-	// TODO :: This should me moved do cue
+	// TODO :: This should me moved do cue/ or rather event/task and be trigger projectile after it ends
+	// No time now however!
 	
 	// if (FireSound != nullptr)
 	// {
 	// 	UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
 	// }
-	//
+	
 	// if (FireAnimation != nullptr)
 	// {
 	// 	UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();

@@ -44,11 +44,13 @@ void UPT_ExecutionResistances::Execute_Implementation(const FGameplayEffectCusto
 	//Grab the tags from source and target
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
- 
+	
 	//Setup our evaluate params
 	FAggregatorEvaluateParameters EvaluateParameters;
 	EvaluateParameters.SourceTags = SourceTags;
 	EvaluateParameters.TargetTags = TargetTags;
+
+	// Basically this will get all Resistances with Tag X and damage with Tag X aggregate them and then calculate final damage
 	
 	//Grab any damage resistances from the target
 	float DamageResistance = 0.0f;
@@ -58,11 +60,15 @@ void UPT_ExecutionResistances::Execute_Implementation(const FGameplayEffectCusto
 	float AbilityDamage = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(FDamageStatics().DamageBaseDef, EvaluateParameters, AbilityDamage);
 
-	float  DamageDone = AbilityDamage * FMath::Clamp(DamageResistance/100, -1.0f,1.0f);
+	// We will clamp between 100% resistance and - 100% resistance (2x damage)
+	float  DamageDone = AbilityDamage * FMath::Clamp(1 - DamageResistance / 100, 0.0f,2.0f);
+
+	UE_LOG(LogTemp,Warning,TEXT("Ability Damage :%f, Target Resistances :%f  Final Damage : %f"),AbilityDamage,DamageResistance,DamageDone);
 	
 	if(DamageDone < 0 )
 	{
 		DamageDone = 0;
 	}
+	
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HealthProperty,EGameplayModOp::Additive, -DamageDone));
 }

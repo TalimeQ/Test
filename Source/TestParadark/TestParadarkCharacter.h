@@ -48,6 +48,10 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void SetWeapon(USkeletalMeshComponent* Weapon);
+
+	
 protected:
 
 	void Move(const FInputActionValue& Value);
@@ -80,6 +84,10 @@ private:
 	/** Start simply then add abstraction if needed */
 	UPROPERTY(VisibleAnywhere, Category = "Abilities")
 	TObjectPtr<UPTAbilitySystemComponent> AbilityComp;
+
+	//Weapon mesh reference so we can return shoot position
+	UPROPERTY(VisibleAnywhere, Category = "Weapon")
+	TWeakObjectPtr<USkeletalMeshComponent> WeaponMeshComp;
 	
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh1P;
