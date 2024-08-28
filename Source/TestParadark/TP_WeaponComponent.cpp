@@ -5,16 +5,16 @@
 #include "TestParadarkCharacter.h"
 #include "TestParadarkProjectile.h"
 #include "GameFramework/PlayerController.h"
-#include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Abilities/PTAbilitySystemComponent.h"
-
+#include "UI/PTWeaponWidget.h"
 
 UTP_WeaponComponent::UTP_WeaponComponent()
 {
 	FiringModeIndex = 0;
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 
@@ -33,11 +33,11 @@ void UTP_WeaponComponent::Fire()
 	FGameplayTagContainer TagContainer;
 	FGameplayTag CurrentAbility = AvailableFiringModes[FiringModeIndex];
 	TagContainer.AddTag(CurrentAbility);
-
-	UE_LOG(LogTemp,Log,TEXT("Firing with the ability type of : %s"),*(CurrentAbility.ToString()));
 	
 	auto* AbilitiesComp = Character->FindComponentByClass<UPTAbilitySystemComponent>();
 	AbilitiesComp->TryActivateAbilitiesByTag(TagContainer);
+
+	UE_LOG(LogTemp,Log,TEXT("Firing with the ability type of : %s"),*(CurrentAbility.ToString()));
 }
 
 void UTP_WeaponComponent::ChangeAmmo(const FInputActionInstance& Instance)
@@ -56,10 +56,35 @@ void UTP_WeaponComponent::ChangeAmmo(const FInputActionInstance& Instance)
 		FiringModeIndex = AvailableFiringModes.Num() - 1;
 	}
 
+	if(ensureAlwaysMsgf(AvailableFiringModes.Num(),TEXT("UTP_WeaponComponent has no firing modes, please fix it! Aborting shooting")))
+	{
+		FGameplayTag CurrentMode = AvailableFiringModes[FiringModeIndex];
+		OnWeaponChanged.Broadcast(CurrentMode);
+
+		UE_LOG(LogTemp,Log,TEXT("New Firing Mode : %s"),*(CurrentMode.ToString()));
+	}
+}
+
+FGameplayTag UTP_WeaponComponent::GetCurrentFiringMode() const
+{
 	if(!ensureAlwaysMsgf(AvailableFiringModes.Num(),TEXT("UTP_WeaponComponent has no firing modes, please fix it! Aborting shooting")))
 	{
-		UE_LOG(LogTemp,Log,TEXT("New Firing Mode : %s"),*(AvailableFiringModes[FiringModeIndex].ToString()));
-		
+		return  AvailableFiringModes[FiringModeIndex];
+	}
+
+	return FGameplayTag::EmptyTag;
+}
+
+void UTP_WeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if(AvailableFiringModes.Num())
+	{
+		// Display what firing mode we have at the moment
+		FString DebugMsg = "Current Fire Mode : " + AvailableFiringModes[FiringModeIndex].ToString();
+		GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Red,*DebugMsg);
 	}
 }
 
@@ -91,6 +116,8 @@ void UTP_WeaponComponent::AttachWeapon(ATestParadarkCharacter* TargetCharacter)
 			EnhancedInputComponent->BindAction(ChangeAmmoTypeAction,ETriggerEvent::Triggered, this, &UTP_WeaponComponent::ChangeAmmo);
 		}
 	}
+
+	CreateWeaponUI();
 }
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -106,5 +133,18 @@ void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		{
 			Subsystem->RemoveMappingContext(FireMappingContext);
 		}
+	}
+}
+
+void UTP_WeaponComponent::CreateWeaponUI()
+{
+	// Fuck that shit.
+	// Seems like widget does not want to get into viewport
+	// This also corruptend my BP somehow so 
+	if(Widget == nullptr && ensureMsgf(WidgetClass,TEXT("Please assign valid widget class")))
+	{
+		Widget = CreateWidget<UPTWeaponWidget>(Character->GetWorld(),WidgetClass);
+		Widget->SetupDataBinds(this);
+		Widget->AddToViewport();
 	}
 }

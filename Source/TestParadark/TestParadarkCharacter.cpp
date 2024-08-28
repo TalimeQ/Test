@@ -50,7 +50,6 @@ void ATestParadarkCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
 }
 
 const FVector ATestParadarkCharacter::GetBulletSpawnLocation_Implementation(const FRotator SpawnRotation)
